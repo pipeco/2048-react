@@ -3,6 +3,7 @@ import Board from '../js/board'
 import Cell from './cell'
 import TileView from './tileView'
 import GameEndOverlay from './gameEndOverlay'
+import Score from './score'
 
 require('../styles/main.scss')
 require('../styles/style.scss')
@@ -82,6 +83,7 @@ class BoardView extends React.Component {
         {cells}
         {tiles}
         <GameEndOverlay board={this.state.board} onRestart={this.restartGame}/>
+        <Score score={this.state.board.score}/>
       </div>
     )
   }

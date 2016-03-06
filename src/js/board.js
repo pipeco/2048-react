@@ -22,6 +22,7 @@ class Board {
 
   constructor () {
     this.won = false
+    this.score = 0
 
     this.tiles = []
     this.cells = []
@@ -80,9 +81,12 @@ class Board {
           var tile1 = targetTile
           targetTile = this.addTile(targetTile.value)
           tile1.mergedInto = targetTile
+          this.score += tile1.value
+
           var tile2 = currentRow.shift()
           tile2.mergedInto = targetTile
           targetTile.value += tile2.value
+          this.score += tile2.value
         }
 
         resultRow[ target ] = targetTile
