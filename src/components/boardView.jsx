@@ -12,7 +12,7 @@ class BoardView extends React.Component {
     board: new Board()
   }
 
-  restartGame () {
+  restartGame = () => {
     this.setState({ board: new Board() })
   }
 
