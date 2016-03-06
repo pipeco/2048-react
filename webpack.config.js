@@ -1,5 +1,12 @@
 var pkg = require('./package.json')
 
+var modules = []
+if (process.env.NODE_ENV !== 'production') {
+  modules.push('webpack/hot/dev-server')
+}
+
+modules.push('./src/app.jsx')
+
 module.exports = {
   cache: true,
 
@@ -7,7 +14,7 @@ module.exports = {
 
   context: __dirname,
 
-  entry: { app: [ 'webpack/hot/dev-server', './src/app.jsx' ] },
+  entry: { app: modules },
 
   output: {
     path: './build',

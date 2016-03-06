@@ -13,4 +13,8 @@ To build the project use `npm run build`
 
 If you want to serve the project use `npm run server`. The server will watch for changes in the source code and will redeploy them
 
-If you want to build and serve the project use `npm run start`
+If you want to build and serve the project use `npm run dev`
+
+### Live version
+
+Go to http://2048react.mybluemix.net for a live version

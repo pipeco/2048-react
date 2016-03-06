@@ -11,11 +11,12 @@
     "Ivan Vergiliev <https://github.com/IvanVergiliev>"
   ],
   "scripts": {
-    "start": "npm run build & npm run server",
-    "build": "npm install & webpack",
-    "server": "webpack-dev-server --hot"
+    "start": "npm run build && ./node_modules/.bin/static -a 0.0.0.0 -p $VCAP_APP_PORT",
+    "dev": "npm run build && npm run server",
+    "build": "npm install && ./node_modules/.bin/webpack",
+    "server": "./node_modules/.bin/webpack-dev-server --hot"
   },
-  "devDependencies": {
+  "dependencies": {
     "babel-core": "^6.1.4",
     "babel-loader": "^6.0.1",
     "babel-plugin-react-transform": "^1.1.1",
@@ -25,6 +26,8 @@
     "classnames": "^2.2.3",
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",
+    "node-sass": "^3.4.2",
+    "node-static": "^0.7.7",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "sass-loader": "^3.1.2",
@@ -33,5 +36,9 @@
     "webpack": "^1.9.10",
     "webpack-dev-server": "*"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">5",
+    "npm": ">3.3"
+  }
 }

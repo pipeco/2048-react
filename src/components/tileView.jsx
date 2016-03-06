@@ -1,5 +1,5 @@
 import React from 'react'
-import ClassNames from 'classNames'
+import ClassNames from 'classnames'
 
 class TileView extends React.Component {
   shouldComponentUpdate (nextProps) {
