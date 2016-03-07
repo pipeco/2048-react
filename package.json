@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "start": "npm run build && ./node_modules/.bin/static -a 0.0.0.0 -p $VCAP_APP_PORT",
-    "dev": "npm run build && npm run server",
+    "dev": "./node_modules/.bin/webpack && npm run server",
     "build": "npm install && ./node_modules/.bin/webpack",
     "server": "./node_modules/.bin/webpack-dev-server --hot"
   },
