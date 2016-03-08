@@ -18,3 +18,5 @@ If you want to build and serve the project use `npm run dev`
 ### Live version
 
 Go to http://2048react.mybluemix.net for a live version
+
+Thanks to [Amadeze](http://plainicon.com/designer-profile/2805-amadeze-icons) for the Robot Icon

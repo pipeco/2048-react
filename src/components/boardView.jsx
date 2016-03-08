@@ -4,17 +4,16 @@ import Cell from './cell'
 import TileView from './tileView'
 import GameEndOverlay from './gameEndOverlay'
 import Score from './score'
+import Factory from '../js/factory'
 
 require('../styles/main.scss')
 require('../styles/style.scss')
 
 class BoardView extends React.Component {
-  state = {
-    board: new Board()
-  }
-
   restartGame = () => {
-    this.setState({ board: new Board() })
+    let board = new Board()
+    let ai = Factory.createAI(Factory.AI_DUMMY, board)
+    this.setState({ board: board, ai: ai })
   }
 
   handleKeyDown = () => {
@@ -41,7 +40,7 @@ class BoardView extends React.Component {
     event.preventDefault()
   }
 
-  handleTouchEnd = (event) =>  {
+  handleTouchEnd = (event) => {
     if (this.state.board.hasWon()) {
       return
     }
@@ -63,16 +62,28 @@ class BoardView extends React.Component {
     }
   }
 
+  handleAiClick = () => {
+    this.state.ai.toggleAI()
+  }
+
   componentDidMount () {
-    window.addEventListener('keydown', this.handleKeyDown)
+    document.body.addEventListener('keydown', this.handleKeyDown)
+  }
+
+  componentWillMount () {
+    this.restartGame()
   }
 
   componentWillUnmount () {
-    window.removeEventListener('keydown', this.handleKeyDown)
+    document.body.removeEventListener('keydown', this.handleKeyDown)
   }
 
   render () {
-    var cells = this.state.board.cells.map((row, index) => {return <div key={index}>{row.map((cell, index) => {return <Cell key={index}/> })}</div>})
+    var cells = this.state.board.cells.map((row, index) => {
+      return <div key={index}>{row.map((cell, index) => {
+        return <Cell key={index}/>
+      })}</div>
+    })
 
     var tiles = this.state.board.tiles
       .filter(tile => {return tile.value !== 0})
@@ -82,7 +93,8 @@ class BoardView extends React.Component {
       <div className='board' onTouchStart={this.handleTouchStart} onTouchEnd={this.handleTouchEnd} tabIndex="1">
         {cells}
         {tiles}
-        <GameEndOverlay board={this.state.board} onRestart={this.restartGame}/>
+        <GameEndOverlay board={this.state.board} ai={this.state.ai} onRestart={this.restartGame}/>
+        <button onClick={this.handleAiClick}><i className='icon-robot'></i></button>
         <Score score={this.state.board.score}/>
       </div>
     )

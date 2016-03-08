@@ -1,12 +1,12 @@
 import Tile from './tile'
 
 function rotateLeft (matrix) {
-  var rows = matrix.length
-  var columns = matrix[ 0 ].length
-  var res = []
-  for (var row = 0; row < rows; ++row) {
+  let rows = matrix.length
+  let columns = matrix[ 0 ].length
+  let res = []
+  for (let row = 0; row < rows; ++row) {
     res.push([])
-    for (var column = 0; column < columns; ++column) {
+    for (let column = 0; column < columns; ++column) {
       res[ row ][ column ] = matrix[ column ][ columns - row - 1 ]
     }
   }
@@ -27,7 +27,7 @@ class Board {
     this.tiles = []
     this.cells = []
 
-    for (var i = 0; i < SIZE; ++i) {
+    for (let i = 0; i < SIZE; ++i) {
       this.cells[ i ] = [ this.addTile(), this.addTile(), this.addTile(), this.addTile() ]
     }
 
@@ -36,24 +36,24 @@ class Board {
   }
 
   addTile () {
-    var res = new Tile()
+    let res = new Tile()
     Tile.apply(res, arguments)
     this.tiles.push(res)
     return res
   }
 
   addRandomTile () {
-    var emptyCells = []
-    for (var r = 0; r < SIZE; ++r) {
-      for (var c = 0; c < SIZE; ++c) {
+    let emptyCells = []
+    for (let r = 0; r < SIZE; ++r) {
+      for (let c = 0; c < SIZE; ++c) {
         if (this.cells[ r ][ c ].value === 0) {
           emptyCells.push({ r: r, c: c })
         }
       }
     }
-    var index = ~~(Math.random() * emptyCells.length)
-    var cell = emptyCells[ index ]
-    var newValue = Math.random() < FOUR_PROBABILITY ? 4 : 2
+    let index = ~~(Math.random() * emptyCells.length)
+    let cell = emptyCells[ index ]
+    let newValue = Math.random() < FOUR_PROBABILITY ? 4 : 2
     this.cells[ cell.r ][ cell.c ] = this.addTile(newValue)
   }
 
@@ -70,20 +70,20 @@ class Board {
   }
 
   moveLeft () {
-    var hasChanged = false
-    for (var row = 0; row < SIZE; ++row) {
-      var currentRow = this.cells[ row ].filter(tile => { return tile.value !== 0 })
-      var resultRow = []
+    let hasChanged = false
+    for (let row = 0; row < SIZE; ++row) {
+      let currentRow = this.cells[ row ].filter(tile => { return tile.value !== 0 })
+      let resultRow = []
 
-      for (var target = 0; target < SIZE; ++target) {
-        var targetTile = currentRow.length ? currentRow.shift() : this.addTile()
+      for (let target = 0; target < SIZE; ++target) {
+        let targetTile = currentRow.length ? currentRow.shift() : this.addTile()
         if (currentRow.length > 0 && currentRow[ 0 ].value === targetTile.value) {
-          var tile1 = targetTile
+          let tile1 = targetTile
           targetTile = this.addTile(targetTile.value)
           tile1.mergedInto = targetTile
           this.score += tile1.value
 
-          var tile2 = currentRow.shift()
+          let tile2 = currentRow.shift()
           tile2.mergedInto = targetTile
           targetTile.value += tile2.value
           this.score += tile2.value
@@ -102,11 +102,11 @@ class Board {
   move (direction) {
     // 0 -> left, 1 -> up, 2 -> right, 3 -> down
     this.clearOldTiles()
-    for (var i = 0; i < direction; ++i) {
+    for (let i = 0; i < direction; ++i) {
       this.cells = rotateLeft(this.cells)
     }
-    var hasChanged = this.moveLeft()
-    for (i = direction; i < 4; ++i) {
+    let hasChanged = this.moveLeft()
+    for (let i = direction; i < 4; ++i) {
       this.cells = rotateLeft(this.cells)
     }
 
@@ -127,24 +127,44 @@ class Board {
     return this.won
   }
 
-  hasLost () {
-    var canMove = false
-    for (var row = 0; row < SIZE; ++row) {
-      for (var column = 0; column < SIZE; ++column) {
-        canMove |= (this.cells[ row ][ column ].value === 0)
+  possibleMoves () {
+    let moves = new Set()
 
-        for (var dir = 0; dir < 4; ++dir) {
-          var newRow = row + DELTA_X[ dir ]
-          var newColumn = column + DELTA_Y[ dir ]
-          if (newRow < 0 || newRow >= SIZE || newColumn < 0 || newColumn >= SIZE) {
-            continue
-          }
+    let matrix = []
+    for (let row = 0; row < SIZE; ++row) {
+      matrix.push([])
+      for (let column = 0; column < SIZE; ++column) {
+        matrix[ row ].push(this.cells[ row ][ column ].value)
+      }
+    }
 
-          canMove |= (this.cells[ row ][ column ].value === this.cells[ newRow ][ newColumn ].value)
+    for (let row = 0; row < SIZE; row++) {
+      for (let column = 0; column < SIZE; column++) {
+        var value = matrix[ row ][ column ]
+        if ((column > 0 && value !== 0) && (matrix[ row ][ column - 1 ] === 0 || matrix[ row ][ column - 1 ] === value)) {
+          moves.add('left')
+        }
+
+        if ((column < 3 && value !== 0) && (matrix[ row ][ column + 1 ] === 0 || matrix[ row ][ column + 1 ] === value)) {
+          moves.add('right')
+        }
+
+        if ((row > 0 && value !== 0) && (matrix[ row - 1 ][ column ] === 0 || matrix[ row - 1 ][ column ] === value)) {
+          moves.add('up')
+        }
+
+        if ((row < 3 && value !== 0) && (matrix[ row + 1 ][ column ] === 0 || matrix[ row + 1 ][ column ] === value)) {
+          moves.add('down')
         }
       }
     }
-    return !canMove
+
+    return moves
+  }
+
+  hasLost () {
+    let moves = this.possibleMoves()
+    return moves.size === 0
   }
 }
 
